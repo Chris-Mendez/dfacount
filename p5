@@ -1,0 +1,45 @@
+import java.util.Scanner;
+public class dfacount {
+    public static void main(String[] args) throws Exception {
+        Scanner scan = new Scanner(System.in);
+        int dfa_count = scan.nextInt();
+        final int MOD = 1000000007;
+
+        for (int i = 0;i < dfa_count;i++){
+            int state_count = scan.nextInt();
+            int alphabet_size = scan.nextInt();
+            int string_length = scan.nextInt();
+            int accept_count = scan.nextInt();
+
+            int[] accept_states = new int[accept_count];
+            for(int j=0;j<accept_count;j++){
+                accept_states[i] = scan.nextInt();
+            }
+            int[][] transitions = new int[state_count][alphabet_size];
+            for(int j=0;j<state_count;j++){
+                for(int k=0;k<alphabet_size;k++){
+                    transitions[j][k] = scan.nextInt();
+                }
+            }
+            long[][] tabulation = new long[string_length+1][state_count];
+            tabulation[0][0] = 1;//initialize empty string input
+
+            for(int j=0;j<string_length;j++){
+                for(int k=0;k<state_count;k++){
+                    if(tabulation[j][k]>0){
+                    for(int l = 0;l<alphabet_size;l++){
+                        int next = transitions[k][l];
+                        tabulation[j+1][next] = tabulation[j+1][next] + tabulation[j][k] % MOD;
+                    }
+                }
+                    
+                }
+            }
+            long result = 0;
+            for (int state : accept_states) {
+                result = (result + tabulation[string_length][state]) % MOD;
+            }
+            System.out.println(result);
+        }
+    }
+}
